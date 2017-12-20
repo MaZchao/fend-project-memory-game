@@ -1,8 +1,43 @@
 /*
  * Create a list that holds all of your cards
  */
+var cardList = [];
+letTheGameBegin();
 
+/**
+ * Init the game
+ */
+function letTheGameBegin() {
+  initCardList();
+  putCardsOnThePage();
+}
 
+/**
+ * Generate cards then then put them into cardList and shuffle the list
+ */
+function initCardList() {
+  var cardTypes = ['diamond', 'paper-plane-o', 'anchor', 'bolt', 'cube', 'leaf', 'bicycle', 'bomb']; // all the card types(img types)
+  for (var i = 0;i < cardTypes.length; i++) {
+    var n = 1;
+    while(n <= 2) {
+      cardList.push(new Card(cardTypes[i]));
+      n++;
+    }
+  }
+  cardList = shuffle(cardList);
+}
+
+function putCardsOnThePage() {
+  for (var i = 0; i < cardList.length; i++) {
+    var dom = document.createElement('li');
+    dom.classList = 'card';
+    var card = cardList[i];
+    dom.innerHTML = card.cardHtml;
+    card.bindDom(dom);
+    document.querySelector('.deck').appendChild(dom);
+  }
+  console.log(cardList);
+}
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
