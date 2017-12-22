@@ -2,6 +2,7 @@
  * Create a list that holds all of your cards
  */
 var cardList = [];
+var activeCard = {};
 letTheGameBegin();
 
 /**
@@ -10,6 +11,7 @@ letTheGameBegin();
 function letTheGameBegin() {
   initCardList();
   putCardsOnThePage();
+  addPageEvents();
 }
 
 /**
@@ -17,9 +19,9 @@ function letTheGameBegin() {
  */
 function initCardList() {
   var cardTypes = ['diamond', 'paper-plane-o', 'anchor', 'bolt', 'cube', 'leaf', 'bicycle', 'bomb']; // all the card types(img types)
-  for (var i = 0;i < cardTypes.length; i++) {
+  for (var i = 0; i < cardTypes.length; i++) {
     var n = 1;
-    while(n <= 2) {
+    while (n <= 2) {
       cardList.push(new Card(cardTypes[i]));
       n++;
     }
@@ -30,36 +32,70 @@ function initCardList() {
 function putCardsOnThePage() {
   for (var i = 0; i < cardList.length; i++) {
     var dom = document.createElement('li');
-    dom.classList = 'card';
+    dom.className = 'card';
     var card = cardList[i];
     dom.innerHTML = card.cardHtml;
+    dom.setAttribute('index', i);
     card.bindDom(dom);
+    card.index = i
     document.querySelector('.deck').appendChild(dom);
   }
-  console.log(cardList);
 }
-/*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
+  var currentIndex = array.length,
+    temporaryValue, randomIndex;
 
-    while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
 
-    return array;
+  return array;
 }
 
+function addPageEvents() {
+  for (let i = 0; i < cardList.length; i++) {
+    cardList[i].dom.addEventListener('click', function (event) {
+      cardOnClick(event.target.getAttribute('index'));
+    })
+  }
+}
+
+/**
+ *
+ * @param  {[type]} index [description]
+ * @return {[type]}       [description]
+ */
+function cardOnClick(index) {
+  console.log(index)
+  console.log(activeCard)
+  if (index === activeCard.index) {
+    return;
+  }
+  var card = cardList[index]
+  if (!activeCard.cardType) {
+    activeCard = card;
+    card.open();
+  } else {
+    if (activeCard.cardType === card.cardType) {
+      card.open();
+      setTimeout(function () {
+        card.match();
+        activeCard.match();
+        activeCard = {};
+      }, 300)
+    } else {
+      card.close();
+      activeCard.close();
+      activeCard = {};
+    }
+  }
+}
 
 /*
  * set up the event listener for a card. If a card is clicked:
