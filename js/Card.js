@@ -2,6 +2,7 @@
 function Card(cardType) {
   this.cardType = cardType;
   this.cardHtml = generateCardHtml(cardType);
+  this.isMatch = false;
 }
 
 Card.prototype.bindDom = function (dom) {
@@ -26,8 +27,8 @@ Card.prototype.close = function () {
 
 Card.prototype.match = function() {
   addClass(this.dom, 'match')
+  this.isMatch = true;
 }
-
 /**
  * generate card's html string from card type
  * @param  {string} cardType card's type

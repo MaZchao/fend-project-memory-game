@@ -3,6 +3,9 @@
  */
 var cardList = [];
 var activeCard = {};
+var moveNum = 0;
+var starNum = 3;
+var matchNum = 0;
 letTheGameBegin();
 
 /**
@@ -61,11 +64,12 @@ function shuffle(array) {
 function addPageEvents() {
   for (let i = 0; i < cardList.length; i++) {
     cardList[i].dom.addEventListener('click', function (event) {
-      cardOnClick(event.target.getAttribute('index'));
+      cardOnClick(parseInt(event.target.getAttribute('index')));
     })
   }
 }
 
+var onCardMatching = false;
 /**
  *
  * @param  {[type]} index [description]
@@ -74,29 +78,58 @@ function addPageEvents() {
 function cardOnClick(index) {
   console.log(index)
   console.log(activeCard)
-  if (index === activeCard.index) {
+  var card = cardList[index]
+  if (index === activeCard.index || card.isMatch || onCardMatching) { // click on the same card or matched card
+    console.log('return!');
     return;
   }
-  var card = cardList[index]
-  if (!activeCard.cardType) {
+  card.open();
+  if (!activeCard.cardType) { // new move
     activeCard = card;
-    card.open();
   } else {
-    if (activeCard.cardType === card.cardType) {
-      card.open();
-      setTimeout(function () {
-        card.match();
-        activeCard.match();
-        activeCard = {};
-      }, 300)
-    } else {
-      card.close();
-      activeCard.close();
-      activeCard = {};
-    }
+    onCardMatching = true;
+    setTimeout(function () { // check the card after the card shows
+      checkCard(card);
+      onCardMatching = false;
+    }, 300)
   }
 }
 
+function checkCard(card) {
+  if (card.cardType === activeCard.cardType) { // on match
+    console.log('sucesss')
+    card.match();
+    activeCard.match();
+    matchNum++;
+  } else { // not match
+    activeCard.close();
+    card.close();
+  }
+  activeCard = {}; // clear the active card variable
+  addMoveNum();
+  if (matchNum === 8) { // all cards are matched
+    alert('游戏完成！');
+  }
+}
+
+function addMoveNum() {
+  document.querySelector('.moves').innerHTML = (++moveNum);
+  calculateStars();
+}
+
+function calculateStars() {
+  if ((moveNum >= 10 && starNum === 3) || (moveNum >= 20 && starNum === 2) || (moveNum >= 30 && starNum === 1)) {
+    starNum--;
+    removeStar();
+  }
+}
+
+function removeStar() {
+  var starEl = document.querySelectorAll('.fa-star')[starNum];
+  if (starEl) {
+    addClass(starEl, 'disable')
+  }
+}
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
