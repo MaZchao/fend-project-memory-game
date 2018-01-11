@@ -32,6 +32,9 @@ function initCardList() {
   cardList = shuffle(cardList);
 }
 
+/**
+ * Put cards on desk.
+ */
 function putCardsOnThePage() {
   for (var i = 0; i < cardList.length; i++) {
     var dom = document.createElement('li');
@@ -61,15 +64,19 @@ function shuffle(array) {
   return array;
 }
 
+/**
+ * Add page event listeners.
+ */
 function addPageEvents() {
+  // click on cards
   for (var i = 0; i < cardList.length; i++) {
     cardList[i].dom.addEventListener('click', function (event) {
       cardOnClick(parseInt(event.target.getAttribute('index')));
     })
   }
 
+  // restart function
   var restartButtons = document.querySelectorAll('.restart-button');
-  console.log(restartButtons)
   for (var i = 0; i < restartButtons.length; i++) {
     restartButtons[i].addEventListener('click', function() {
       restartGame();
@@ -77,18 +84,15 @@ function addPageEvents() {
   }
 }
 
-var onCardMatching = false;
+var onCardMatching = false; // Whether two cards are in matching process. If true then card clicking is not allowed.
+
 /**
- *
- * @param  {[type]} index [description]
- * @return {[type]}       [description]
+ * Function when a card is clicked.
+ * @param  {number} index Index of the card
  */
 function cardOnClick(index) {
-  console.log(index)
-  console.log(activeCard)
   var card = cardList[index]
   if (index === activeCard.index || card.isMatch || onCardMatching) { // click on the same card or matched card
-    console.log('return!');
     return;
   }
   card.open();
@@ -103,9 +107,12 @@ function cardOnClick(index) {
   }
 }
 
+/**
+ * Check if newly opened card is the same with previous card.
+ * @param  {Card} card new card
+ */
 function checkCard(card) {
   if (card.cardType === activeCard.cardType) { // on match
-    console.log('sucesss')
     card.match();
     activeCard.match();
     matchNum++;
@@ -120,11 +127,17 @@ function checkCard(card) {
   }
 }
 
+/**
+ * Add move number after one round.
+ */
 function addMoveNum() {
   document.querySelector('.moves').innerHTML = (++moveNum);
   calculateStars();
 }
 
+/**
+ * Calculate star numbers.
+ */
 function calculateStars() {
   if ((moveNum >= 10 && starNum === 3) || (moveNum >= 20 && starNum === 2) || (moveNum >= 30 && starNum === 1)) {
     starNum--;
@@ -135,7 +148,8 @@ function calculateStars() {
 function removeStar() {
   var starEl = document.querySelectorAll('.fa-star')[starNum];
   if (starEl) {
-    addClass(starEl, 'disable');
+    removeClass(starEl, 'fa-star');
+    addClass(starEl, 'fa-star-o');
   }
 }
 
@@ -160,25 +174,17 @@ function getGameOverMsg() {
 }
 
 function restartGame() {
+  // clear data.
   cardList = [];
   moveNum = 0;
   starNum = 3;
   matchNum = 0;
+  // clear user interface
   document.querySelector('.moves').innerHTML = '0';
   document.querySelector('.stars').innerHTML = '<li class="star"><i class="fa fa-star"></i></li> <li class="star"><i class="fa fa-star"></i></li> <li class="star"><i class="fa fa-star"></i></li>';
   document.querySelector('.deck').innerHTML = '';
-
+  // close gameover popup
   removeClass(document.querySelector('.gameover-popup'), 'show')
-
+  // restart game
   letTheGameBegin();
 }
-/*
- * set up the event listener for a card. If a card is clicked:
- *  - display the card's symbol (put this functionality in another function that you call from this one)
- *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
- *  - if the list already has another card, check to see if the two cards match
- *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
- *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
- *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
- */

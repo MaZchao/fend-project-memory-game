@@ -108,14 +108,6 @@ h1 {
   cursor: pointer;
 }
 
-.fa-star {
-  transition: all 0.3s;
-}
-
-.fa-star.disable {
-  color: #c7c7c7;
-}
-
 /* gameover popup */
 
 .gameover-popup {
