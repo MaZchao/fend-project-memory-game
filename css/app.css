@@ -115,3 +115,71 @@ h1 {
 .fa-star.disable {
   color: #c7c7c7;
 }
+
+/* gameover popup */
+
+.gameover-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0) scale(0);
+  transform-origin: center;
+  background-color: #fff;
+  width: 400px;
+  height: 300px;
+  border-radius: 10px;
+}
+
+.gameover-popup.show {
+  animation: popup 0.3s;
+  transform: translate3d(-50%, -50%, 0) scale(1);
+}
+
+.gameover-popup p, .gameover-popup div {
+  text-align: center;
+}
+
+.gameover-popup .gameover-icon {
+  margin-top: 20px;
+}
+
+.gameover-popup .fa-check-circle {
+  color: #14d695;
+  font-size: 100px;
+}
+
+.gameover-popup .gameover-msg {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.gameover-popup .gameover-score {
+  margin-top: 10px;
+}
+
+.gameover-popup .restart-button {
+  display: inline-block;
+  width: 160px;
+  height: 40px;
+  cursor: pointer;
+  background-color: #02ccba;
+  color: #fff;
+  font-size: 18px;
+  border: none;
+}
+
+.gameover-popup .restart-button:active {
+  background-color: #039185;
+}
+
+@keyframes popup {
+  0% {
+    transform: translate3d(-50%, -50%, 0) scale(0);
+  }
+  50% {
+    transform: translate3d(-50%, -50%, 0) scale(1.1);
+  }
+  100% {
+    transform: translate3d(-50%, -50%, 0) scale(1);
+  }
+}

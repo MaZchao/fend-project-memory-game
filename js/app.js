@@ -62,9 +62,17 @@ function shuffle(array) {
 }
 
 function addPageEvents() {
-  for (let i = 0; i < cardList.length; i++) {
+  for (var i = 0; i < cardList.length; i++) {
     cardList[i].dom.addEventListener('click', function (event) {
       cardOnClick(parseInt(event.target.getAttribute('index')));
+    })
+  }
+
+  var restartButtons = document.querySelectorAll('.restart-button');
+  console.log(restartButtons)
+  for (var i = 0; i < restartButtons.length; i++) {
+    restartButtons[i].addEventListener('click', function() {
+      restartGame();
     })
   }
 }
@@ -108,7 +116,7 @@ function checkCard(card) {
   activeCard = {}; // clear the active card variable
   addMoveNum();
   if (matchNum === 8) { // all cards are matched
-    alert('游戏完成！');
+    endGame();
   }
 }
 
@@ -127,8 +135,42 @@ function calculateStars() {
 function removeStar() {
   var starEl = document.querySelectorAll('.fa-star')[starNum];
   if (starEl) {
-    addClass(starEl, 'disable')
+    addClass(starEl, 'disable');
   }
+}
+
+function endGame() {
+  var gameOverMsg = getGameOverMsg();
+  document.getElementById('gameover-score-msg').innerHTML = gameOverMsg;
+  addClass(document.querySelector('.gameover-popup'), 'show');
+}
+
+function getGameOverMsg() {
+  var msg;
+  if (starNum === 3) {
+    msg = 'Perfect! You have 3 stars in only ' + moveNum + ' moves!';
+  } else if (starNum === 2) {
+    msg = '2 stars and ' + moveNum + ' moves. Great!';
+  } else if (starNum === 1) {
+    msg = 'You get 1 star with ' + moveNum + ' moves. Not too bad.';
+  } else if (starNum === 0) {
+    msg = 'Ehh. No star for you. Better luck next time!';
+  }
+  return msg
+}
+
+function restartGame() {
+  cardList = [];
+  moveNum = 0;
+  starNum = 3;
+  matchNum = 0;
+  document.querySelector('.moves').innerHTML = '0';
+  document.querySelector('.stars').innerHTML = '<li class="star"><i class="fa fa-star"></i></li> <li class="star"><i class="fa fa-star"></i></li> <li class="star"><i class="fa fa-star"></i></li>';
+  document.querySelector('.deck').innerHTML = '';
+
+  removeClass(document.querySelector('.gameover-popup'), 'show')
+
+  letTheGameBegin();
 }
 /*
  * set up the event listener for a card. If a card is clicked:
