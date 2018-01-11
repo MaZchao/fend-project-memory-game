@@ -6,6 +6,7 @@ var activeCard = {};
 var moveNum = 0;
 var starNum = 3;
 var matchNum = 0;
+var startTime;
 letTheGameBegin();
 
 /**
@@ -15,6 +16,7 @@ function letTheGameBegin() {
   initCardList();
   putCardsOnThePage();
   addPageEvents();
+  startTime = new Date().getTime();
 }
 
 /**
@@ -78,7 +80,7 @@ function addPageEvents() {
   // restart function
   var restartButtons = document.querySelectorAll('.restart-button');
   for (var i = 0; i < restartButtons.length; i++) {
-    restartButtons[i].addEventListener('click', function() {
+    restartButtons[i].addEventListener('click', function () {
       restartGame();
     })
   }
@@ -145,6 +147,9 @@ function calculateStars() {
   }
 }
 
+/**
+ * Remove one star.
+ */
 function removeStar() {
   var starEl = document.querySelectorAll('.fa-star')[starNum];
   if (starEl) {
@@ -153,12 +158,20 @@ function removeStar() {
   }
 }
 
+/**
+ * Game over
+ */
 function endGame() {
   var gameOverMsg = getGameOverMsg();
   document.getElementById('gameover-score-msg').innerHTML = gameOverMsg;
+  document.getElementById('time-spend').innerHTML = getTimeSpendString();
   addClass(document.querySelector('.gameover-popup'), 'show');
 }
 
+/**
+ * Get game over msg shown on popup
+ * @return {string} msg
+ */
 function getGameOverMsg() {
   var msg;
   if (starNum === 3) {
@@ -173,6 +186,22 @@ function getGameOverMsg() {
   return msg
 }
 
+/**
+ * Convert time interval to MM:SS format string
+ * @return {string} time
+ */
+function getTimeSpendString() {
+  var interval = (new Date().getTime()) - startTime;
+  var min = Math.floor((interval / 60000) % 60);
+  var sec = Math.floor((interval / 1000) % 60);
+  min = min < 10 ? '0' + min : min;
+  sec = sec < 10 ? '0' + sec : sec;
+  return (min + ':' + sec)
+}
+
+/**
+ * Restart the game
+ */
 function restartGame() {
   // clear data.
   cardList = [];
